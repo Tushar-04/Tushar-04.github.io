@@ -8,7 +8,7 @@ export default function SearchBar() {
     const [repoList, SetrepoList] = useState([]);
     const GetplaceList = async (query) => {
         console.log(query);
-        const temp = await fetch(`https://api.github.com/search/repositories?q=language:Javascript&sort=stars&order=desc`).then(res => res.json());
+        const temp = await fetch(`https://api.github.com/search/repositories?q=language:${query}&sort=stars&order=desc`).then(res => res.json());
         SetrepoList(temp.items);
     };
     const handleSearch = () => {
