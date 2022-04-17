@@ -6,35 +6,59 @@ import Page1 from './Page1';
 
 export default function SearchBar() {
     const [repoList, SetrepoList] = useState([]);
-    const GetplaceList = async (query) => {
-        console.log(query);
-        const temp = await fetch(`https://api.github.com/search/repositories?q=language:${query}&sort=stars&order=desc`).then(res => res.json());
-        SetrepoList(temp.items);
+    const GetrepoList = async (l,n,s,o,p,pi) => {
+        if(l!="" && n==""){
+            const temp = await fetch(`https://api.github.com/search/repositories?q=language:${l}&sort=${s}&order=${o}&page=${p}&per_page=${pi}`).then(res => res.json());
+            SetrepoList(temp.items);
+        }
+        else if(l=="" && n!=""){
+            const temp = await fetch(`https://api.github.com/search/repositories?q=name:${n}&sort=${s}&order=${o}&page=${p}&per_page=${pi}`).then(res => res.json());
+            SetrepoList(temp.items);
+        }
+        else if(l!="" && n!=""){
+            const temp = await fetch(`https://api.github.com/search/repositories?q=language:${l}&name:${n}&sort=${s}&order=${o}&page=${p}&per_page=${pi}`).then(res => res.json());
+            SetrepoList(temp.items);
+        }
+        
     };
     const handleSearch = () => {
-        GetplaceList(wordEnter)
+        GetrepoList(wordEnter,sname,sort,order,currentPage,postsPerPage)
     };
     const [wordEnter, setWordEnter] = useState("");
     const handleFilter = event => {
         const enteredWord = event.target.value;
         setWordEnter(enteredWord)
     };
-    const [currentPage, setCurrentPage] = useState(1);
-    const [postsPerPage] = useState(10);
-    const paginate = pageNumber => setCurrentPage(pageNumber);
+    const [sname, setsname] = useState("");
+    const handlesname = event => {
+        const enteredWord = event.target.value;
+        setsname(enteredWord)
+    };
+    const [currentPage, setCurrentPage] = useState("");
+    const handlecurrentPage = event => {
+        const enteredWord = event.target.value;
+        setCurrentPage(enteredWord)
+    };
+    const [postsPerPage,setpostsPerPage] = useState("");
+    const handlepostsPerPage = event => {
+        const enteredWord = event.target.value;
+        setpostsPerPage(enteredWord)
+    };
+    const [sort,setsort] = useState("stars");
+    const [order,setorder] = useState("desc");
     return (
         <>
             <div className="search">
                 <div className="searchInputs">
                     <input type="text" placeholder='Search by Language' value={wordEnter} onChange={handleFilter} />
                     <h2 className='my-2 mx-1'>OR</h2>
-                    <input type="text" placeholder='Search by Name' value={wordEnter} onChange={handleFilter} />
+                    <input type="text" placeholder='Search by Name' value={sname} onChange={handlesname} />
                 </div>
                 <div className="searchInputs">
-                    <input type="text" placeholder='Page Number' value={wordEnter} onChange={handleFilter} />
+                    <input type="text" placeholder='Page Number' value={currentPage} onChange={handlecurrentPage} />
                 </div>
                 <div className="searchInputs">
-                    <input type="text" placeholder='Items Per Page' value={wordEnter} onChange={handleFilter} />
+                    <input type="text" placeholder='Items Per Page' value={postsPerPage} onChange={handlepostsPerPage} />
                 </div>
                 <div className="searchInputs">
                     <div className="icon" onClick={handleSearch}><SearchIcon /></div>
